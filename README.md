@@ -1,4 +1,6 @@
-# run_sf.sh
+# @ scripts/terahertzsweep
+These shell scripts are for Toptica THz sweep analysis and Readout power sweep analysis
+## run_sf.sh (for Toptica THz sweep analysis)
 
 ex.)
 
@@ -91,7 +93,7 @@ The default is to use a maximum of -1 CPU.
 
 Later in the script, "kid_corresp.json is transferred to aste-d1c and a symbolic link will be created.
 
-# run_powersweep.sh (for read power sweep analysis)
+## run_powersweep.sh (for Read power sweep analysis)
 
 ex.)
 
@@ -163,3 +165,58 @@ This script finds the appropriate read power and writes them (-4 dBm) to "kids.l
 The original "kids.list" is renamed with a timestamp.
 
 Later in the script, "kids.list" is transferred to aste-d1c and a symbolic link will be created.
+
+
+# @ scripts/aste
+This shell script is for both Noise analysis and COSMOS data analysis
+## run_sf.sh
+
+ex.)
+
+```
+$ ./run_sf.sh /home/deshima/data/LT263_FlightChip/run_20240423_145620/ out_test
+```
+
+```shell
+#!/bin/sh
+NCPU=`python -c "import multiprocessing as m; print(m.cpu_count() - 1);"`
+
+echo NCPU = $NCPU
+
+file_dir=$1
+out_dir=$2
+
+last_dir=$(basename "$file_dir")
+#second_last_dir=$(basename "$(dirname "$file_dir")")
+
+echo ====Configure.py====
+echo -e "${file_dir}\n/home/deshima/data/analysis/${last_dir}/${out_dir}" | python Configure.py
+
+echo ====FitSweep.py====
+python FitSweep.py
+echo ====FitSweep.py --mode plot --ncpu $NCPU====
+python FitSweep.py --mode plot --ncpu $NCPU
+
+
+echo ====SaveFits.py====
+python SaveFits.py
+echo ====SaveFits.py --mode plot --ncpu $NCPU====
+python SaveFits.py --mode plot --ncpu $NCPU
+
+
+echo ====FINISHED====
+```
+
+This is a shell script that executes the following python scripts.
+
+Comment out and run it as appropriate.
+
+The default is to use a maximum of -1 CPU.
+
+* Configure.py
+  * Specify a new directory in which to place the analysis results. If the directory already exists, this will fail.
+* FitSweep.py
+  \*
+* SaveFits.py
+  * Creates reduced fits file
+
