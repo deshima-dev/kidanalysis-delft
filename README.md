@@ -93,7 +93,7 @@ The default is to use a maximum of -1 CPU.
 
 Later in the script, "kid_corresp.json is transferred to aste-d1c and a symbolic link will be created.
 
-## run_powersweep.sh (for Read power sweep analysis)
+## run_powersweep.sh (for Readout power sweep analysis)
 
 ex.)
 
@@ -191,6 +191,7 @@ last_dir=$(basename "$file_dir")
 
 echo ====Configure.py====
 echo -e "${file_dir}\n/home/deshima/data/analysis/${last_dir}/${out_dir}" | python Configure.py
+
 
 echo ====FitSweep.py====
 python FitSweep.py
