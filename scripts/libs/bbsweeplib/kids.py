@@ -242,6 +242,14 @@ class KIDs(Cache, Mapping):
                 warnings.warn('please set Channel number')
                 raise RuntimeError('error')
 
+        self.hasRoomChopperLOsweep = False
+        if kws.get('sweeps_path_roomchopper'):
+            self._sweeps_roomchopper_path = kws['sweeps_path_roomchopper']
+            self.hasRoomChopperLOsweep = True
+        else:
+            print('There is no local sweep with room chopper closed')
+            self._sweeps_roomchopper_path = None
+            
     def bins_kid(self):
         return self._kidslist[1]
 
@@ -263,6 +271,12 @@ class KIDs(Cache, Mapping):
     def raw_sweeps(self):
         """read sweep file"""
         return read_localsweep(self._sweeps_path, framelen=self.framelen)
+
+    @do_cache
+    def raw_sweeps_roomchopper(self):
+        """read sweep file"""
+        if self.hasRoomChopperLOsweep:
+            return read_localsweep(self._sweeps_roomchopper_path, framelen=self.framelen)
 
     @do_cache
     def raw_tods(self):
@@ -382,6 +396,12 @@ class KID(Cache):
             return swps[self.bin]
 
     @do_cache
+    def raw_sweep_roomchopper(self):
+        swps = self._parent.get_cache('raw_sweeps_roomchopper')
+        if swps:
+            return swps[self.bin]
+
+    @do_cache
     def find_glitch(self,
                     baseline_thresh = 6.0, glitch_thresh = 5.0, clusterize_thresh = 2,
                     interp_offset = 0):
@@ -425,6 +445,15 @@ class KID(Cache):
     def fit(self, nfwhm=5, fitter='gaolinbg', Q_search=1e+4):
         # err = md.get_error_sweep_iq(self.sweep()[:10])
         swp = self.get_cache('raw_sweep')
+        #fc = self.get_fcarrier() # GHz
+        fc = self.get_fcenter() # GHz
+        err = None
+        r = md.fit_onepeak(swp, fc, err, nfwhm, fitter=fitter, Q_search=Q_search)
+        return r
+
+    @do_cache
+    def fit_roomchopper(self, nfwhm=5, fitter='gaolinbg', Q_search=1e+4):
+        swp = self.get_cache('raw_sweep_roomchopper')
         #fc = self.get_fcarrier() # GHz
         fc = self.get_fcenter() # GHz
         err = None
