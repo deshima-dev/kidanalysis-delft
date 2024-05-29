@@ -80,7 +80,7 @@ class KidFitResult(object):
         return data.x[self.fitrange()]
     x = property(get_x) # backward compatibility
 
-    def plot(self, data=None, ax1=None, ax2=None):
+    def plot(self, data=None, ax1=None, ax2=None, opt=None):
         if data is None:
             if self.data is None:
                 raise RuntimeError('no sweep data is supplied: you may use get_x(swpdata).')
@@ -108,39 +108,62 @@ class KidFitResult(object):
         if ax1 is None:
             fig1 = plt.figure()
             ax1  = fig1.add_subplot(111)
-        ax1.plot(x, abs(IQ),'.g', label='Ampl.')
-        ax1.plot(x, I,'.b', label='I')
-        ax1.plot(x, Q,'.r', label='Q')
-        ax1.plot(x[s], abs(fity),'-y')
-        ax1.plot(x[s], np.real(fity),'-c')
-        ax1.plot(x[s], np.imag(fity),'-m')
-        if fitx0:
-            ax1.plot(fitx0, np.abs(fity0), 'r*')
-        if self.bgfunc:
-            ax1.plot(x, abs(self.bg(x)), '-', color='gray', label='bg')
-        ax1.set_xlabel('Frequency [GHz]')
-        ax1.set_ylabel('Amplitude')
-        ax1.grid()
-        ax1.axhline(color='k')
-        ax1.legend(loc='best')
+        if opt is None:
+            ax1.plot(x, abs(IQ),'.g', label='Ampl.')
+            ax1.plot(x, I,'.b', label='I')
+            ax1.plot(x, Q,'.r', label='Q')
+            ax1.plot(x[s], abs(fity),'-y', lw=3)
+            ax1.plot(x[s], np.real(fity),'-c', lw=3)
+            ax1.plot(x[s], np.imag(fity),'-m', lw=3)
+            if fitx0:
+                ax1.plot(fitx0, np.abs(fity0), 'r*', ms=15)
+            if self.bgfunc:
+                ax1.plot(x, abs(self.bg(x)), '-', color='gray', lw=2, label='bg')
+        elif opt=='sub':
+            alpha = 0.5
+            ax1.plot(x, abs(IQ),'g', alpha=alpha)
+            ax1.plot(x, I,'b', alpha=alpha)
+            ax1.plot(x, Q,'r', alpha=alpha)
+            ax1.plot(x[s], abs(fity),'--y')
+            ax1.plot(x[s], np.real(fity),'--c')
+            ax1.plot(x[s], np.imag(fity),'--m')
+            if fitx0:
+                ax1.plot(fitx0, np.abs(fity0), 'r*')
+            if self.bgfunc:
+                ax1.plot(x, abs(self.bg(x)), '--', color='gray')
+        if opt is None:
+            ax1.set_xlabel('Frequency [GHz]')
+            ax1.set_ylabel('Amplitude')
+            ax1.grid()
+            ax1.axhline(color='k')
+            ax1.legend(loc='best')
 
         ## ax 2: plot on IQ plane
         if ax2 is None:
             fig2 = plt.figure()
             ax2 = fig2.add_subplot(111, aspect='equal')
-
-        ax2.plot(I, Q, '.b', label='data')
-        ax2.plot(np.real(fity), np.imag(fity), '-c', label='fit')
-        # ax2.plot(np.real(inity), np.imag(inity), '-y', label='initial guess')
-        if fitx0:
-            ax2.plot(np.real(fity0), np.imag(fity0), 'r*')
-        if self.bgfunc:
-            ax2.plot(np.real(self.bg(x)), np.imag(self.bg(x)), '-', color='gray', label='bg')
-        ax2.set_xlabel('I')
-        ax2.set_ylabel('Q')
-        ax2.axhline(color='k')
-        ax2.axvline(color='k')
-        ax2.grid()
+        if opt is None:
+            ax2.plot(I, Q, '.b', label='data')
+            ax2.plot(np.real(fity), np.imag(fity), '-c', lw=3, label='fit')
+            # ax2.plot(np.real(inity), np.imag(inity), '-y', label='initial guess')
+            if fitx0:
+                ax2.plot(np.real(fity0), np.imag(fity0), 'r*', ms=15)
+            if self.bgfunc:
+                ax2.plot(np.real(self.bg(x)), np.imag(self.bg(x)), '-', color='gray', lw=2, label='bg')
+        elif opt=='sub':
+            alpha = 0.5
+            ax2.plot(I, Q, 'b', alpha=alpha)
+            ax2.plot(np.real(fity), np.imag(fity), '--c')
+            if fitx0:
+                ax2.plot(np.real(fity0), np.imag(fity0), 'r*')
+            if self.bgfunc:
+                ax2.plot(np.real(self.bg(x)), np.imag(self.bg(x)), '--', color='gray')
+        if opt is None:
+            ax2.set_xlabel('I')
+            ax2.set_ylabel('Q')
+            ax2.axhline(color='k')
+            ax2.axvline(color='k')
+            ax2.grid()
 
         # Put a legend below current axis
         ax2.legend(loc='best')
