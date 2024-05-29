@@ -270,7 +270,7 @@ def Plot(kids, plot_tod_ratio, force, blindtone, test, NCPU):
         ts = copy.deepcopy(hdu['READOUT'].data['timestamp'])
         ampl, phase, linphase = copy.deepcopy(hdu['READOUT'].data['Amp, Ph, linPh %d' %i].T)
         yfc, linyfc = copy.deepcopy(hdu['KIDSINFO'].data['yfc, linyfc'][i])
-        params_list.append({"i": i, "kid": kid, "plotdir":plotdir, "blindtone": blindtone, "outdir": outdir, "kids": kids, "plot_tod_ratio": plot_tod_ratio, "rebin": rebin, "dt": dt, "ts": ts, "ampl": ampl, "phase": phase, "linphase": linphase, "yfc": yfc, "linyfc": linyfc})
+        params_list.append({"i": i, "kid": kid, "plotdir":plotdir, "blindtone": blindtone, "blinddir":blinddir, "outdir": outdir, "kids": kids, "plot_tod_ratio": plot_tod_ratio, "rebin": rebin, "dt": dt, "ts": ts, "ampl": ampl, "phase": phase, "linphase": linphase, "yfc": yfc, "linyfc": linyfc})
     from multiprocessing import Pool
     #print(md)
     p = Pool(NCPU)
@@ -285,12 +285,12 @@ def plot_multi(params):
     kid = params["kid"]
     plotdir = params["plotdir"]
     blindtone = params["blindtone"]
+    blinddir = params["blinddir"]
     outdir = params["outdir"]
     kids = params["kids"]
     plot_tod_ratio = params["plot_tod_ratio"]
     rebin = params["rebin"]
     dt = params["dt"]
-    rebin = params["rebin"]
     #ifname = os.path.join(outdir, 'reduced_' + os.path.basename(kids._tods_path))
     #hdu = fits.open(ifname)
     #rebin = hdu['READOUT'].header['DSAMPLE']
