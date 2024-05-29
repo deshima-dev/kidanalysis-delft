@@ -111,8 +111,11 @@ def Calc(kids, rebin, verbose,
 
         if k.enabled:
             ##### fit info
-            r_room   = k.get_cache('fit_roomchopper')
-            fr_room  = r_room.params['fr'].value; dfr_room = r_room.params['fr'].stderr # GHz
+            if k.has_cache('fit_roomchopper'):
+                r_room   = k.get_cache('fit_roomchopper')
+                fr_room  = r_room.params['fr'].value; dfr_room = r_room.params['fr'].stderr # GHz
+            else:
+                fr_room  = np.nan; dfr_room = np.nan
             ##
             r   = k.get_cache('fit')
             fr  = r.params['fr'].value; dfr = r.params['fr'].stderr # GHz
