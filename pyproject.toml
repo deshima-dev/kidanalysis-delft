@@ -2,7 +2,7 @@
 name = "kidanalysis-delft"
 version = "0.1.0"
 description = "KID analysis scripts made in Delft"
-authors = ["Kennichi Karatsu", "Shinji Fujita"]
+authors = ["Kenichi Karatsu", "Shinji Fujita"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
