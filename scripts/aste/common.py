@@ -18,8 +18,7 @@ import bbsweeplib as bbs
 
 ## output directories
 #outdir    = 'out/'
-script_dir = os.path.dirname(os.path.abspath(__file__))
-current_outdir = os.path.join(script_dir, 'current_outdir.conf')
+current_outdir = './current_outdir.conf'
 
 with open(current_outdir) as f:
     outdir = f.readline().strip()
