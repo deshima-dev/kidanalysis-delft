@@ -43,7 +43,7 @@ def _fit(function, xs, ys, err=None, via=None, range=None, silent=False,
     if type(function) == Expr_with_args:
         tmpargs = function.arg_names
     else:
-        argspec  = inspect.getargspec(func)
+        argspec  = inspect.getfullargspec(func)
         tmpargs = argspec.args[1:]
 
     ## prepare params argument
