@@ -8,7 +8,7 @@ out/kids dir to store kid-related data files.
 run:
 # 1. specify data files (asked by prompt)
 # 2. modify config data at out/conf/general.conf
-#  - DeltaHz in [values]: gap frequency. used when determining 
+#  - DeltaHz in [values]: gap frequency. used when determining
 #        lowest frequency for table of filter transparency
 #  - [powerfreqbin]: used for radiation power calculation (numerical integral)
 #  - etendue in [optics]: optical throughput
@@ -67,12 +67,12 @@ def main(argv=None):
     #
     kidslist_path   = os.path.join(targetdir, 'kids.list')
     localsweep_path = os.path.join(targetdir, 'localsweep.sweep')
-    TOD_fits_path = os.path.join(targetdir, 'measurement.fits')
+    TOD_fits_path = glob.glob(os.path.join(targetdir, '*.fits'))[0]
     localsweep_roomchopper_path = os.path.join(targetdir, 'RoomChopperClosed', 'localsweep.sweep')
     if not os.path.exists(localsweep_roomchopper_path):
-        localsweep_roomchopper_path = ''        
-    
-    
+        localsweep_roomchopper_path = ''
+
+
     if args.force:
         try:
             shutil.rmtree(outdir)
