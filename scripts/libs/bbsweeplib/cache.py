@@ -34,9 +34,9 @@ class Cache(object):
         else:
             func = getattr(self, name)
             orig_func = func.orig_func
-            argspec = inspect.getargspec(orig_func)
+            argspec = inspect.getfullargspec(orig_func)
             # print argspec
-            args, varargs, kws, defaults = argspec
+            args, varargs, kws, defaults, *_ = argspec
             # print argspec
             if args == ['self'] and varargs is None and kws is None:
                 return func()
