@@ -1,6 +1,7 @@
 import warnings
 import os
-from collections import Mapping, OrderedDict
+from collections import OrderedDict
+from collections.abc import Mapping
 
 import numpy as np
 from astropy.io import fits as pyfits
@@ -47,7 +48,7 @@ class fits_tods_fits(Mapping):
         self._read_bins = {}
 
         self.offset = -100 # remove last part of data (sometimes they behave bad)
-        
+
     def close(self):
         self.hud.close()
 
@@ -110,24 +111,24 @@ class hdf5_tods_fits(Mapping):
         self.R = Readout
         self.Ch = Channel
         self.header = dict()
-        
+
         self.open()
-        
+
     def read_header(self):
         #sysinfo = dict( self.hud.attrs )
         #chinfo = dict( self.hud['rack_%02d' %self.R]['channel_%02d' %self.Ch].attrs )
         datainfo = dict( self.hud['rack_%02d' %self.R]['channel_%02d' %self.Ch]['data'].attrs )
-        
+
         self.header['lofreq']  = datainfo['lo_frequency']*1e+6 # MHz to Hz
         self.header['npoints'] = datainfo['frame_length']
         self.header['fftgain'] = datainfo['fft_gain']
         self.header['nbins']   = datainfo['num_bins']
         self.header['framert'] = datainfo['frame_rate']
-        
+
     def open(self):
         self.hud = h5py.File(self.infile, 'r')
         self.read_header()
-        
+
         self.fftgain  = self.header['fftgain']
         self.framert  = self.header['framert']
         self.nbins    = self.header['nbins']
@@ -136,7 +137,7 @@ class hdf5_tods_fits(Mapping):
         lbins = self.hud['rack_%02d' %self.R]['channel_%02d' %self.Ch]['bins']
         assert( len(lbins)==self.nbins )
         for i in range(self.nbins):
-            self.header['BIN%d' %i] = lbins[i]        
+            self.header['BIN%d' %i] = lbins[i]
         self.bins     = [_to_nbit_signed(self.header['BIN%d' %i], self.npoints)
                          for i in range(self.nbins)]
         self.if_freq      = self.kSampleRate * np.array(self.bins) / 2**self.npoints
@@ -150,7 +151,7 @@ class hdf5_tods_fits(Mapping):
         self._read_bins = {}
 
         self.offset = -100 # remove last part of data (sometimes they behave bad)
-        
+
     def close(self):
         self.hud.close()
 
@@ -249,7 +250,7 @@ class KIDs(Cache, Mapping):
         else:
             print('There is no local sweep with room chopper closed')
             self._sweeps_roomchopper_path = None
-            
+
     def bins_kid(self):
         return self._kidslist[1]
 
@@ -296,13 +297,13 @@ class KIDs(Cache, Mapping):
                 bad = k.find_glitch.cache
             else:
                 bad = k.find_glitch(baseline_thresh, glitch_thresh, clusterize_thresh)
-                
+
             if bad_for_any is None:
                 #bad_for_any = bad
                 bad_for_any = bad.copy()
             else:
                 bad_for_any |= bad
-                
+
             #if i % 20 == 0:
             #    self.save(clear_memory=True)
 
@@ -519,7 +520,7 @@ class KID(Cache):
             #dphases.append( np.std(phase)/np.sqrt( len(phase)-1 ) )
             dampls.append( np.std(ampl) )
             dphases.append( np.std(phase) )
-            
+
         return np.array([ampls, dampls, phases, dphases])
 
     @do_cache
@@ -544,7 +545,7 @@ class KID(Cache):
     @do_cache
     def set_filter_params(self, masterid, kind, F0, dF0, Q, dQ):
         return masterid, kind, F0, dF0, Q, dQ
-    
+
     @do_cache
     def set_dPdT(self, pval, perr):
         return pval, perr
@@ -624,7 +625,7 @@ class KID(Cache):
         import scipy.interpolate
         tck = scipy.interpolate.splrep(phase_f, swp.x, s=0)
         f = scipy.interpolate.splev(phase, tck, der=0)
-        
+
         if opt=='phase':
             return phase
         elif opt=='fshift':
@@ -637,7 +638,7 @@ class KID(Cache):
         else:
             print( '>>> KID::convert_to_fshift: Not supported option!!' )
             print( '>>> return phase' )
-            return phase    
+            return phase
 
     def slice_tod(self, opt='phase'):
         slices = self._parent.get_cache('set_slice')
@@ -645,7 +646,7 @@ class KID(Cache):
         ts, ampl, phase = d.unpack()
 
         ## linearize phase
-        fshift = self.convert_to_fshift(phase, opt)        
+        fshift = self.convert_to_fshift(phase, opt)
 
         d = md.FixedFitData(d.frequency*1e+9, ts, ampl, fshift)
         return [d[s] for s in slices]
