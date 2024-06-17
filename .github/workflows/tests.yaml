@@ -1,0 +1,32 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  job:
+    name: Test (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    env:
+      POETRY_VIRTUALENVS_CREATE: false
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.9", "3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install poetry==1.8.3 && poetry install
+      - run: deshima-rawdata download 20231117042946 -e
+      - run: python scripts/aste/Configure.py cosmos_20231117042946 out
+      - run: python scripts/aste/FitSweep.py
+      - run: python scripts/aste/SaveFits.py
