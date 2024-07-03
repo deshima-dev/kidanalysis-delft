@@ -190,7 +190,9 @@ def Calc(kids, nfwhm=5, fitter='gaolinbg', verbose=0, force=False,
                 dQi_ = r.params['Qi'].stderr
 
                 #if dfr_/fr_<0. or dQr_/Qr_<0. or dQc_/Qc_<0. or dQi_/Qi_<0.:
-                if dfr_/fr_<0. or dQr_/Qr_<0. or dQc_/Qc_<0.:
+                if dfr_ is None or dQr_ is None or dQc_ is None or dQi_ is None:
+                    failed.append(i)
+                elif dfr_/fr_<0. or dQr_/Qr_<0. or dQc_/Qc_<0.:
                     failed.append(i)
                 elif fr_!=fr_ or dfr_!=dfr_ or Qr_!=Qr_ or dQr_!=dQr_: # reject Nan
                     failed.append(i)

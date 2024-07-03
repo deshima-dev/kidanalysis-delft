@@ -19,10 +19,14 @@ class FitResult(object):
         else:
             self.error_is_asymptotic = True
 
+        if minimized.covar is not None:
+            self.covar = minimized.covar
+        else:
+            self.covar = np.full([minimized.nvarys] * 2, np.nan)
+
         self.function = function
         self.init_vals = minimized.init_vals
         self.params = minimized.params
-        self.covar  = minimized.covar
         self.info   = dict((k, getattr(minimized, k)) for k in
                            # json-friendly data taken from
                            # http://lmfit.github.io/lmfit-py/fitting.html#MinimizerResult
