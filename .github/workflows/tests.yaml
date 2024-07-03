@@ -25,6 +25,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
+      - run: pip install setuptools==70.0.0  # temporary
       - run: pip install poetry==1.8.3 && poetry install
       - run: deshima-rawdata download 20231117042946 -e
       - run: python scripts/aste/Configure.py cosmos_20231117042946 out
