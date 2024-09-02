@@ -241,8 +241,8 @@ def Plot(kids, plot_tod_ratio, force, blindtone, test, NCPU):
         else:
             os.symlink(plotdir, calibtoddir)
 
+    blinddir = outdir + '/figSaveFits.Blindtone'
     if blindtone:
-        blinddir = outdir + '/figSaveFits.Blindtone'
         if force:
             try:
                 shutil.rmtree(blinddir)
@@ -281,6 +281,8 @@ def Plot(kids, plot_tod_ratio, force, blindtone, test, NCPU):
     #    
     #    if test and i>10: break
 def plot_multi(params):
+    import mkid_data as md
+    
     i = params["i"]
     kid = params["kid"]
     plotdir = params["plotdir"]

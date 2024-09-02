@@ -8,7 +8,8 @@ import os
 import sqlite3
 import datetime
 import numpy as np
-dbname = '/Users/sfujita/Desktop/DESHIMA/toptica/kid_test.db'
+#dbname = '/Users/sfujita/Desktop/DESHIMA/toptica/kid_test.db'
+dbname = '../kid_test.db'
 conn = sqlite3.connect(dbname, 
                        detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
 
@@ -204,12 +205,14 @@ def kid_corresp(kids, args):
     import json
     ## add wideband KID
     ref_list = []
-    line_count = 0
     with open(os.path.join(outdir, "reference.dat")) as f:
         for line in f:
-            if line_count != 0:
+            if line[0] == '#':
+                continue
+            elif len(line[:-1]) == 0:
+                continue
+            else:
                 ref_list.append(int(line.split("\n")[0]))
-            line_count += 1
     print("reference.dat = ", ref_list)
     tmpdict = {}
     if len(ref_list)>=4:

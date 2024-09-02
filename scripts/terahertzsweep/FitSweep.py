@@ -22,7 +22,7 @@ import shutil
 from collections import OrderedDict
 
 import matplotlib.pyplot as plt
-import mkid_data as md
+#import mkid_data as md
 import numpy as np
 
 def get_kids_from_db(runid):
@@ -353,6 +353,8 @@ def Plot(kids, force, test, NCPU):
     """
     
 def plot_multi(params):
+    import mkid_data as md
+
     i = params["i"]
     kid = params["kid"]
     plotdir = params["plotdir"]
