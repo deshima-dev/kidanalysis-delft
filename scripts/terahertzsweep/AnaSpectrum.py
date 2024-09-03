@@ -7,7 +7,7 @@ import os
 import copy
 
 import matplotlib.pyplot as plt
-import mkid_data as md
+#import mkid_data as md
 import numpy as np
 from astropy.io import fits
 
@@ -15,7 +15,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 libpath = os.path.join(os.path.dirname(script_dir), 'libs')
 sys.path.append(libpath)
 
-from common import *
+#from common import *
 import pandas as pd
 import scipy.optimize
 import lmfit
@@ -673,5 +673,6 @@ if __name__ == '__main__':
     from fit.confidence_band import confidence_band
     from matplotlib.backends.backend_pdf import PdfPages
 
+    import mkid_data as md
     main()
 

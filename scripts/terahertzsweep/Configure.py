@@ -104,8 +104,8 @@ def main(argv=None):
     measure_id = os.path.basename(os.path.dirname(targetdir))
     #print("mkdir -p /home/deshima/data/analysis/%s/%s"%(run_id, measure_id))
     #os.system("mkdir -p /home/deshima/data/analysis/%s/%s"%(run_id, measure_id))
-    print("mkdir -p /Users/sfujita/Desktop/DESHIMA/toptica/analysis/%s/%s"%(run_id, measure_id))
-    os.system("mkdir -p /Users/sfujita/Desktop/DESHIMA/toptica/analysis/%s/%s"%(run_id, measure_id))
+#    print("mkdir -p /Users/sfujita/Desktop/DESHIMA/toptica/analysis/%s/%s"%(run_id, measure_id))
+#    os.system("mkdir -p /Users/sfujita/Desktop/DESHIMA/toptica/analysis/%s/%s"%(run_id, measure_id))
     outdir  = args.outdir or input('out directory (e.g., out_test):')
     confdir = outdir + '/conf'
     disabled_kid_file = outdir + '/disabled_kids.dat'

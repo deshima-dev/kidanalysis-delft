@@ -8,7 +8,8 @@ import os
 import sqlite3
 import datetime
 import numpy as np
-dbname = '/Users/sfujita/Desktop/DESHIMA/toptica/kid_test.db'
+#dbname = '/Users/sfujita/Desktop/DESHIMA/toptica/kid_test.db'
+dbname = '../kid_test.db'
 conn = sqlite3.connect(dbname, 
                        detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
 
@@ -106,26 +107,67 @@ def kid_corresp(kids, args):
     ax.set_ylabel('F_filter [GHz]')
     fig.savefig(os.path.join(plotdir, 'raw.pdf'))
     fig.savefig(os.path.join(plotdir, 'raw.png'), dpi = 300)
+    plt.close()
+    plt.clf()
+    plt.cla()
+
 #    fig.savefig(os.path.join(plotdir, 'raw.design.pdf'))
 #    fig.savefig(os.path.join(plotdir, 'raw.design.png'), dpi = 300)
 
     ########################## adjust
+
+
+    #### Arend's adjustment
+    # Split into left and right of LO
+    measured_idx_sort = np.argsort(f_KID_measured)
+    design_idx_sort = np.argsort(f_KID_design)
+
+    F_filter_measured = F_filter_measured[measured_idx_sort]
+    F_filter_design = F_filter_design[design_idx_sort]
+    f_KID_measured = np.sort(f_KID_measured) 
+    f_KID_design = np.sort(f_KID_design) 
+
+    max_idx_measured = np.argmax(np.diff(f_KID_measured))
+    max_idx_design = np.argmax(np.diff(f_KID_design))
+
+    f_KID_measured_lo = f_KID_measured[:max_idx_measured+1]
+    f_KID_measured_hi = f_KID_measured[max_idx_measured+1:]
+    f_KID_design_lo = f_KID_design[:max_idx_design+1]
+    f_KID_design_hi = f_KID_design[max_idx_design+1:]
+
     def adjust(a, b):
         ''' supposing a and b are numpy array'''
         return a, (a.std()/b.std())*(b - b.mean()) + a.mean()
 
-    print( f_KID_design, f_KID_measured )
+    fKda_lo, fKma_lo = adjust(f_KID_design_lo, f_KID_measured_lo)
+    fKda_hi, fKma_hi = adjust(f_KID_design_hi, f_KID_measured_hi)
+    
+    # Also adjust whole arrays, for the Y-axis rectification
     fKda, fKma = adjust(f_KID_design, f_KID_measured)
 
     Ffda, Ffma = adjust(F_filter_design, F_filter_measured)
+    
+    def rectify(a, b, offset):
+        """ offset parameter to move to left and right of LO gap """
+        return a - a.mean() - offset, (b - b.mean())*a.std()/b.std()
 
-    def rectify(a, b):
-        return a - a.mean(), (b - b.mean())*a.std()/b.std()
+    X_design_lo, Y_design_lo = rectify(fKda_lo, Ffda, offset=0.5)
+    X_design_hi, Y_design_hi = rectify(fKda_hi, Ffda, offset=-0.5)
+    _, Y_design = rectify(fKda, Ffda, offset=0)
+    X_design = np.append(X_design_lo, X_design_hi)
+    #Y_design = np.append(Y_design_lo, Y_design_hi)
 
-    X_design, Y_design = rectify(fKda, Ffda)
     C_design = X_design + 1j*Y_design
-    X_measured, Y_measured = rectify(fKma, Ffma)
+    
+    X_measured_lo, Y_measured_lo = rectify(fKma_lo, Ffma, offset=0.5)
+    X_measured_hi, Y_measured_hi = rectify(fKma_hi, Ffma, offset=-0.5)
+    _, Y_measured = rectify(fKma, Ffma, offset=0)
+    X_measured = np.append(X_measured_lo, X_measured_hi)
+    #Y_measured = np.append(Y_measured_lo, Y_measured_hi)
+    
     C_measured = X_measured + 1j*Y_measured
+
+    #### End of Arend's adjustment
 
     ############# adj plot
     fig, ax = plt.subplots(figsize = (8,8))
@@ -204,12 +246,14 @@ def kid_corresp(kids, args):
     import json
     ## add wideband KID
     ref_list = []
-    line_count = 0
     with open(os.path.join(outdir, "reference.dat")) as f:
         for line in f:
-            if line_count != 0:
+            if line[0] == '#':
+                continue
+            elif len(line[:-1]) == 0:
+                continue
+            else:
                 ref_list.append(int(line.split("\n")[0]))
-            line_count += 1
     print("reference.dat = ", ref_list)
     tmpdict = {}
     if len(ref_list)>=4:
