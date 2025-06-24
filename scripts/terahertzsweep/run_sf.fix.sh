@@ -9,28 +9,28 @@ out_dir=$2
 last_dir=$(basename "$file_dir")
 second_last_dir=$(basename "$(dirname "$file_dir")")
 
-echo ====Configure.py====
-echo -e "${file_dir}\n/home/deshima/data/fujita_analysis/ana_2025/analysis/${second_last_dir}/${last_dir}/${out_dir}" | python Configure.py
+#echo ====Configure.py====
+#echo -e "${file_dir}\n/home/deshima/toptica_analysis/ana_data/${second_last_dir}/${last_dir}/${out_dir}" | python Configure.py
 
-echo ====FitSweep.py====
-python FitSweep.py
-echo ====FitSweep.py --mode plot --ncpu $NCPU====
-python FitSweep.py --mode plot --ncpu $NCPU
-
-
-echo ====SaveFits.py====
-python SaveFits.py
-echo ====SaveFits.py --mode plot --ncpu $NCPU====
-python SaveFits.py --mode plot --ncpu $NCPU
+#echo ====FitSweep.py====
+#python FitSweep.py
+#echo ====FitSweep.py --mode plot --ncpu $NCPU====
+#python FitSweep.py --mode plot --ncpu $NCPU
 
 
-echo ====THzFrequencyTOD.py --refvalue 5.0====
-python THzFrequencyTOD.py --refvalue 5.0
-echo ====THzFrequencyTOD.py --mode plot --ncpu $NCPU====
-python THzFrequencyTOD.py --mode plot --ncpu $NCPU
+#echo ====SaveFits.py====
+#python SaveFits.py
+#echo ====SaveFits.py --mode plot --ncpu $NCPU====
+#python SaveFits.py --mode plot --ncpu $NCPU
 
 
-echo ====python AnaSpectrum.py --mode 1 --ncpu $NCPU====
+#echo ====THzFrequencyTOD.py --refvalue 5.0====
+#python THzFrequencyTOD.py --refvalue 5.0
+#echo ====THzFrequencyTOD.py --mode plot --ncpu $NCPU====
+#python THzFrequencyTOD.py --mode plot --ncpu $NCPU
+
+
+#echo ====python AnaSpectrum.py --mode 1 --ncpu $NCPU====
 ###python AnaSpectrum.py --mode 1 --ncpu $NCPU
 echo ====python AnaSpectrum.py --mode 2====
 python AnaSpectrum.py --mode 2

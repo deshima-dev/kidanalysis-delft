@@ -4,7 +4,6 @@
 import sys
 import shutil
 import os
-from pathlib import Path
 
 import sqlite3
 import datetime
@@ -136,6 +135,13 @@ def kid_corresp(kids, args):
     f_KID_design_lo = f_KID_design[:max_idx_design+1]
     f_KID_design_hi = f_KID_design[max_idx_design+1:]
 
+    print("numpy save")
+    print(plotdir)
+    np.save(os.path.join(plotdir, 'f_KID_measured.npy'), f_KID_measured)
+    np.save(os.path.join(plotdir, 'F_filter_measured.npy'), F_filter_measured)
+    np.save(os.path.join(plotdir, 'f_KID_design.npy'), f_KID_design)
+    np.save(os.path.join(plotdir, 'F_filter_design.npy'), F_filter_design)
+
     def adjust(a, b):
         ''' supposing a and b are numpy array'''
         return a, (a.std()/b.std())*(b - b.mean()) + a.mean()
@@ -241,9 +247,6 @@ def kid_corresp(kids, args):
     ax.grid()
     fig.savefig(os.path.join(plotdir, 'correspondence.pdf'))
     fig.savefig(os.path.join(plotdir, 'correspondence.png'), dpi = 300)
-    Path_outdir = Path(outdir)
-    parent = (Path_outdir.parent).parent.name
-    fig.savefig(os.path.join(plotdir, f'correspondence_{parent}.png'), dpi = 300)
 
     ########################### Write to json
     kc_path = os.path.join(outdir, 'kid_corresp.json')
