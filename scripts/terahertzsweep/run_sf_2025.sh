@@ -12,6 +12,10 @@ second_last_dir=$(basename "$(dirname "$file_dir")")
 echo ====Configure.py====
 echo -e "${file_dir}\n/home/deshima/data/fujita_analysis/ana_2025/analysis/${second_last_dir}/${last_dir}/${out_dir}" | python Configure.py
 
+###
+#rsync -a --exclude 'conf/' /home/deshima/data/fujita_analysis/ana_2025/analysis/${second_last_dir}/${last_dir}/out_20250522_3/THzsweep /home/deshima/data/fujita_analysis/ana_2025/analysis/${second_last_dir}/${last_dir}/${out_dir}/
+#rsync -a --exclude 'conf/' /home/deshima/data/fujita_analysis/ana_2025/analysis/${second_last_dir}/${last_dir}/out_20250508_1/* /home/deshima/data/fujita_analysis/ana_2025/analysis/${second_last_dir}/${last_dir}/${out_dir}/
+
 echo ====FitSweep.py====
 python FitSweep.py
 echo ====FitSweep.py --mode plot --ncpu $NCPU====
@@ -21,23 +25,52 @@ python FitSweep.py --mode plot --ncpu $NCPU
 echo ====SaveFits.py====
 python SaveFits.py
 echo ====SaveFits.py --mode plot --ncpu $NCPU====
-python SaveFits.py --mode plot --ncpu $NCPU
+#python SaveFits.py --mode plot --ncpu $NCPU
 
+#######
+
+echo ====THzFrequencyTOD.py --refvalue 5.0====
+#python THzFrequencyTOD.py --refvalue 5.0
+echo ====THzFrequencyTOD.py --mode plot --ncpu $NCPU====
+#python THzFrequencyTOD.py --mode plot --ncpu $NCPU
+
+
+echo ====flag_KIDs_based_on_FitSweep.py====
+#python flag_KIDs_based_on_FitSweep.py --threshold_fr_diff 1.0e-4 --del_1st_or_2nd 1st
+
+echo ====python AnaSpectrum.py --mode 1 --ncpu $NCPU====
+###python AnaSpectrum.py --mode 1 --ncpu $NCPU
+echo ====python AnaSpectrum.py --mode 2====
+#python AnaSpectrum.py --mode 2
+
+echo ====KIDCorresp.py====
+#python KIDCorresp.py
+
+echo ====KIDCorresp_ikeda.py====
+#python KIDCorresp_ikeda.py --del_1st_or_2nd 1st
+
+
+########
 
 echo ====THzFrequencyTOD.py --refvalue 5.0====
 python THzFrequencyTOD.py --refvalue 5.0
 echo ====THzFrequencyTOD.py --mode plot --ncpu $NCPU====
-python THzFrequencyTOD.py --mode plot --ncpu $NCPU
+#python THzFrequencyTOD.py --mode plot --ncpu $NCPU
 
+
+echo ====flag_KIDs_based_on_FitSweep.py====
+python flag_KIDs_based_on_FitSweep.py --threshold_fr_diff 1.0e-4 --del_1st_or_2nd 2nd
 
 echo ====python AnaSpectrum.py --mode 1 --ncpu $NCPU====
 ###python AnaSpectrum.py --mode 1 --ncpu $NCPU
 echo ====python AnaSpectrum.py --mode 2====
 python AnaSpectrum.py --mode 2
 
-
 echo ====KIDCorresp.py====
 python KIDCorresp.py
+
+echo ====KIDCorresp_ikeda.py====
+python KIDCorresp_ikeda.py --del_1st_or_2nd 2nd
 
 #json_fullpath=/home/deshima/data/analysis/${second_last_dir}/${last_dir}/${out_dir}/kid_corresp.json
 #timestamp=$(date +"%Y%m%d_%H%M%S")

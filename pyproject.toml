@@ -4,6 +4,7 @@ version = "2024.7.0"
 description = "KID analysis scripts made in Delft"
 authors = ["Kenichi Karatsu", "Shinji Fujita"]
 maintainers = ["Akio Taniguchi <taniguchi@a.phys.nagoya-u.ac.jp>"]
+package-mode = false
 readme = "README.md"
 
 [tool.poetry.dependencies]

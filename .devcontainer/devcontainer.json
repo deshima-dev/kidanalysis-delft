@@ -1,18 +1,13 @@
 {
     "name": "kidanalysis-delft",
     "image": "python:3.11",
-    "features": {
-        "ghcr.io/devcontainers-contrib/features/poetry:2": {
-            "version": "1.8.3"
-        }
-    },
     "containerEnv": {
         "POETRY_VIRTUALENVS_CREATE": "false"
     },
     "runArgs": [
         "--name=kidanalysis-delft"
     ],
-    "postCreateCommand": "poetry install",
+    "postCreateCommand": "pip install poetry && poetry install",
     "customizations": {
         "vscode": {
             "extensions": [
