@@ -186,11 +186,11 @@ def main(argv=None):
     with open(reftxtlist, 'a') as f:
         print( '# below are append due to bad chi2', file=f )
         for i in np.unique(bad_list_concat):
-            print( i, file=f )
+            print( str(int(i)), file=f )
     with open(reftxtlist, 'a') as f:
             print( '# below are append due to overlap %s' %del_1st_or_2nd, file=f )
             for i in np.unique(bad_list_fr_diff_concat):
-                print( i, file=f )
+                print( str(int(i)), file=f )
 
 
 
